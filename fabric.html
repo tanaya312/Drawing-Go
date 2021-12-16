@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/460/fabric.min.js" integrity="sha512-ybPp3kCrNQXdvTfh99YLIdnajWnQvHuEKDJ+b26mxI9w+pLhnBo3HmNLJ1pEUBFO1Q0bfJxApeqecNbmaV763g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/460/fabric.js" integrity="sha512-d5yqsvICrC8y0ivNsNizSCHXjzireXYU6LmzAvcrL97GMwEn0VKx1vclEwvtsh/yPD2EcATnUG1oEtJuFcTE3Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<style>
+    body {
+      background-image: url("https://cdn.pixabay.com/photo/2017/08/30/01/05/milky-way-2695569_960_720.jpg");
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+      text-align: center;
+      overflow-x:hidden;
+      margin:0;
+      line-height:1.5;
+    }
+</style>
+<body>
+<canvas id="c" width="1450" height="750"></canvas>
+<script type="text/javascript" >
+ (function() {
+  var canvas = this.__canvas = new fabric.Canvas('c', {
+    hoverCursor: 'pointer',
+    selection: false,
+    targetFindTolerance: 2
+  });
+
+  canvas.on({
+    'object:moving': function(e) {
+      e.target.opacity = 0.5;
+    },
+    'object:modified': function(e) {
+      e.target.opacity = 1;
+    }
+  });
+
+  for (var i = 0, len = 15; i < len; i++) {
+    fabric.Image.fromURL('static/bug.png', function(img) {
+      img.set({
+        left: fabric.util.getRandomInt(0, 600),
+        top: fabric.util.getRandomInt(0, 500),
+        angle: fabric.util.getRandomInt(0, 90)
+      });
+
+      img.perPixelTargetFind = true;
+      img.hasControls = img.hasBorders = false;
+
+      img.scale(fabric.util.getRandomInt(50, 100) / 100);
+
+      canvas.add(img);
+    });
+  }
+})();
+
+</script>
+
+</body>
+</html>
+
+

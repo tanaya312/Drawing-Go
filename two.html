@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>two.js example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.7.12/two.min.js" integrity="sha512-e98YA3F0r9vKfSQWwBUox70HJS+JuMqwTx+z3qyrnp95fw1Z7TjIDOVG0J/SuizTuikHRSG6yTafcdyIIFJtHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.7.12/two.js" integrity="sha512-wUhgJ9lQAKqYgNCk0RNhOHEsPwnC+zFX3K+izmiJcOBNxgx7F0+dGttwqsURiUCneWYG0/N7gS5tn6U5TjH3VA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.7.12/two.module.js" integrity="sha512-yHNGcubbKlDnvnnUWh96GTRaWGu0S41j5YQAaO4TsFGXErvt6+qtDqwAZE1xJ7v97uUEcU+ysWi5+kq/i1mJfg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.7.12/two.min.js" integrity="sha512-e98YA3F0r9vKfSQWwBUox70HJS+JuMqwTx+z3qyrnp95fw1Z7TjIDOVG0J/SuizTuikHRSG6yTafcdyIIFJtHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<style>
+    body {
+      background-image: url("https://cdn.pixabay.com/photo/2017/08/30/01/05/milky-way-2695569_960_720.jpg");
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+      text-align: center;
+      overflow-x:hidden;
+      margin:0;
+      line-height:1.5;
+    }
+</style>
+<body>
+<div id="drawingarea"></div>
+<script type="text/javascript">
+
+var squished = false;
+
+var two = new Two({
+  type: Two.Types.svg,
+  fullscreen: true
+}).appendTo(document.body);
+
+two.renderer.domElement.style.background = 'rgb(153, 102, 255)';
+
+var radius = two.height / 3;
+var resolution = 32;
+var circle = new Two.Circle(0, 0, radius, resolution);
+var blob = new Two.Path(circle.vertices);
+blob.fill = 'white';
+blob.noStroke();
+
+blob.closed = true;
+blob.curved = true;
+blob.automatic = true;
+
+two.add(blob);
+
+reset();
+
+two.bind('update', update).play();
+
+function update() {
+
+  if (!squished) {
+
+    for (var i = 0; i < blob.vertices.length; i++) {
+      var v = blob.vertices[i];
+      var d = v.destination;
+
+      if (v.equals(d)) {
+        squished = true;
+        break;
+      }
+
+      v.x += (d.x - v.x) * 0.125;
+      v.y += (d.y - v.y) * 0.125;
+    }
+
+    return;
+  }
+
+  var outside = true;
+
+  for (var i = 0; i < blob.vertices.length; i++) {
+    var v = blob.vertices[i];
+    v.y += v.step;
+    v.step *= 1.125;
+    if (v.y < two.height) {
+      outside = false;
+    }
+  }
+
+  if (outside) {
+    reset();
+  }
+
+}
+
+function reset() {
+
+  blob.translation.set(two.width / 2, two.height / 2);
+
+  squished = false;
+
+  for (var i = 0; i < blob.vertices.length; i++) {
+    var v = blob.vertices[i];
+    var pct = (i + 1) / blob.vertices.length;
+    var theta = pct * Math.PI * 2;
+    var radius = Math.random() * two.height / 3 + two.height / 6;
+    var x = radius * Math.cos(theta);
+    var y = radius * Math.sin(theta);
+    v.set(two.height / 3 * Math.cos(theta), two.height / 3 * Math.sin(theta));
+    v.destination = new Two.Vector(x, y);
+    v.step = Math.sqrt(Math.random()) + 2;
+  }
+
+}
+/////https://two.js.org/examples/
+</script>
+</body>
+</html>

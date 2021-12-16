@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ocanvas/2.10.0/ocanvas.min.js" integrity="sha512-Ow7A0F6Zlkcz7U5GiVG37/yCsDkv1gVMdZzYYz/btvt2d1u5vfXkBb3xGyoFT6SbVoR7Q6Kx3MCDbjaxFR9qWg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ocanvas/2.10.0/ocanvas.js" integrity="sha512-lsaSyWcSISsIIclw2NEOz01a53o/ea52qnYmp3mz0nX5kb+weQ3DVY66o898VgAPVEiTW/ZrSvye/q2D0NiRog==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<style>
+    body {
+      background-image: url("https://cdn.pixabay.com/photo/2017/08/30/01/05/milky-way-2695569_960_720.jpg");
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+      text-align: center;
+      overflow-x:hidden;
+      margin:0;
+      line-height:1.5;
+    }
+</style>
+<body style="text-align: center;">
+<canvas id="canvas" width="1200" height="710"></canvas>
+<script type="text/javascript" >
+
+  var canvas = oCanvas.create({
+	canvas: "#canvas"
+});
+
+var button = canvas.display.rectangle({
+	x: canvas.width / 2,
+	y: canvas.width / 5,
+	origin: { x: "center", y: "center" },
+	width: 200,
+	height: 70,
+	fill: "#079",
+	stroke: "10px #079",
+	join: "round"
+});
+var buttonText = canvas.display.text({
+	x: 0,
+	y: 0,
+	origin: { x: "center", y: "center" },
+	align: "center",
+	font: "bold 25px sans-serif",
+	text: "Start Rotation",
+	fill: "#fff"
+});
+button.addChild(buttonText);
+
+var arc = canvas.display.arc({
+	x: canvas.width / 3.5,
+	y: button.y + 150,
+	radius: 60,
+	start: 40,
+	end: 270,
+	fill: "blue",
+	pieSection: true
+});
+var pentagon = canvas.display.polygon({
+	x: canvas.width / 1.5,
+	y: arc.y,
+	sides: 5,
+	radius: 60,
+	fill: "yellow"
+});
+
+var hexagon = pentagon.clone({ sides: 6, x: arc.x, y: pentagon.y + 180, fill: "red" });
+var heptagon = pentagon.clone({ sides: 7, x: pentagon.x, y: hexagon.y, fill: "pink" });
+
+canvas.addChild(arc);
+canvas.addChild(pentagon);
+canvas.addChild(hexagon);
+canvas.addChild(heptagon);
+canvas.addChild(button);
+
+var dragOptions = { changeZindex: true };
+
+arc.dragAndDrop(dragOptions);
+pentagon.dragAndDrop(dragOptions);
+hexagon.dragAndDrop(dragOptions);
+heptagon.dragAndDrop(dragOptions);
+
+canvas.setLoop(function () {
+	arc.rotation++;
+	pentagon.rotation--;
+	hexagon.rotation++;
+	heptagon.rotation--;
+});
+
+button.bind("click tap", function () {
+	if (canvas.timeline.running) {
+		canvas.timeline.stop();
+	} else {
+		canvas.timeline.start();
+	}
+});
+</script>
+
+</body>
+</html>
